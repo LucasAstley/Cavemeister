@@ -1,15 +1,30 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Cavemeister</title>
-
 </head>
-<body>
-<h1 class="text-3xl font-bold underline --color-clifford">
-    Hello world!
-</h1>
+<body class="bg-amber-50 min-h-screen flex flex-col">
+<header class="bg-amber-800 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Cavemeister</h1>
+        <nav aria-label="Navigation principale">
+            <ul class="flex space-x-4">
+                <li><a href="#collection" class="hover:underline">Collection</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto p-4 my-8 flex-grow">
+    <section id="collection" class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-3xl font-bold mb-4 text-amber-800">Ma Collection</h2>
+        <button type="button" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded">
+            Ajouter une bouteille
+        </button>
+    </section>
+</main>
 </body>
 </html>
