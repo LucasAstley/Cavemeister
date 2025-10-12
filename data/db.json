@@ -129,17 +129,18 @@
     },
     {
       "id": 8,
-      "caveId": 3,
+      "caveId": "3",
       "name": "Baileys Irish Cream",
       "category": "liqueur",
       "subcategory": "cream",
-      "year": null,
+      "year": "2005",
       "volume": 700,
       "alcoholContent": 17,
       "storageTemperature": 15,
       "origin": "Dublin, Ireland",
-      "quantity": 1,
-      "createdAt": "2025-02-18T11:30:00.000Z"
+      "quantity": "1",
+      "createdAt": "2025-02-18T11:30:00.000Z",
+      "updatedAt": "2025-10-12T12:29:19.070Z"
     },
     {
       "id": 9,
@@ -166,8 +167,9 @@
       "alcoholContent": 14,
       "storageTemperature": 12,
       "origin": "Vallée du Rhône, France",
-      "quantity": 12,
-      "createdAt": "2025-02-22T16:20:00.000Z"
+      "quantity": 3,
+      "createdAt": "2025-02-22T16:20:00.000Z",
+      "updatedAt": "2025-10-12T12:42:27.204Z"
     }
   ]
 }

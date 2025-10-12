@@ -1,0 +1,19 @@
+{
+  "name": "cavemeister",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucasAstley/Cavemeister.git"
+  },
+  "private": true,
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "loglevel": "^1.9.2"
+  }
+}

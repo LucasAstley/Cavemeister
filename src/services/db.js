@@ -53,7 +53,7 @@ async function getAllElementsFromCollection(collectionName) {
 /**
  * Gets an element by its ID
  * @param {string} collectionName - Name of the collection
- * @param {string|number} elementId - ID of the element
+ * @param {number} elementId - ID of the element to find
  * @returns {Promise<Object|null>} The found element or null
  */
 async function getElementById(collectionName, elementId) {
@@ -188,13 +188,80 @@ async function findElement(collectionName, predicateFunction) {
     return matchingElements;
 }
 
+/**
+ * Récupère toutes les caves depuis la base de données
+ * @returns {Promise<Array>} Liste des caves
+ */
+async function getCaves() {
+    try {
+        const data = await readDB()
+        return data.caves || [];
+    } catch (error) {
+        console.error('Erreur lors de la récupération des caves:', error);
+        return [];
+    }
+}
+/**
+ * Crée une nouvelle collection dans la base de données
+ * @param {string} collectionName - Nom de la collection à créer
+ * @param {Array} [initialData=[]] - Données initiales optionnelles pour la collection
+ * @returns {Promise<Object>} Objet représentant la base de données mise à jour avec la nouvelle collection
+ */
+async function createCollection(collectionName) {
+    try {
+        const data = await readDB();
+
+        if (data[collectionName]) {
+            throw new Error(`La collection ${collectionName} existe déjà`);
+        }
+
+        data[collectionName] = [];
+
+        await writeDB(data);
+
+        logger.info(`Collection ${collectionName} créée avec succès`);
+        return data;
+    } catch (error) {
+        logger.error(`Erreur lors de la création de la collection ${collectionName}:`, error);
+        throw error;
+    }
+}
+
+async function getCollectionById(id) {
+    try {
+        const data = await readDB();
+
+        if (!data.caves) {
+            logger.warn("Collection 'caves' non trouvée dans la base de données");
+            return null;
+        }
+
+        const cave = data.caves.find(cave => cave.id === id);
+
+        if (!cave) {
+            logger.warn(`Cave avec ID ${id} non trouvée`);
+            return null;
+        }
+
+        return cave;
+    } catch (error) {
+        logger.error(`Erreur lors de la récupération de la cave avec ID ${id}:`, error);
+        throw error;
+    }
+}
+
+
+
 module.exports = {
     readDB,
     writeDB,
+    createCollection,
     getAllElementsFromCollection,
     getElementById,
     createElement,
     updateElement,
     removeElement,
-    findElement
+    getCollectionById,
+    findElement,
+    getCaves
 };
