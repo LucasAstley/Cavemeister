@@ -65,7 +65,7 @@ Ce projet a été développé par trois collaborateurs :
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT.
+Ce projet est sous licence MIT :
 
 ```
 MIT License
