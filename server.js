@@ -9,6 +9,10 @@ logger.setLevel(process.env.LOG_LEVEL || 'info');
 
 const PORT = process.env.PORT;
 
+if (!PORT) {
+    logger.error('Error: PORT is not defined in environment variables');
+    process.exit(1);
+}
 
 app.use(express.static('public'));
 app.use(express.json());
