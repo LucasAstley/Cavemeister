@@ -189,63 +189,75 @@ async function findElement(collectionName, predicateFunction) {
 }
 
 /**
- * Récupère toutes les caves depuis la base de données
- * @returns {Promise<Array>} Liste des caves
+ * Retrieves all cellars from the database
+ * @returns {Promise<Array>} List of cellars
  */
 async function getCaves() {
     try {
+        logger.debug('Retrieving all cellars from database');
         const data = await readDB()
-        return data.caves || [];
+        const caves = data.caves || [];
+        logger.info(`Successfully retrieved ${caves.length} cellars`);
+        return caves;
     } catch (error) {
-        console.error('Erreur lors de la récupération des caves:', error);
+        logger.error('Error retrieving cellars:', error);
         return [];
     }
 }
+
 /**
- * Crée une nouvelle collection dans la base de données
- * @param {string} collectionName - Nom de la collection à créer
- * @param {Array} [initialData=[]] - Données initiales optionnelles pour la collection
- * @returns {Promise<Object>} Objet représentant la base de données mise à jour avec la nouvelle collection
+ * Creates a new collection in the database
+ * @param {string} collectionName - Name of the collection to create
+ * @returns {Promise<Object>} Object representing the updated database with the new collection
  */
 async function createCollection(collectionName) {
     try {
+        logger.debug(`Creating new collection: ${collectionName}`);
         const data = await readDB();
 
         if (data[collectionName]) {
-            throw new Error(`La collection ${collectionName} existe déjà`);
+            const errorMessage = `Collection ${collectionName} already exists`;
+            logger.warn(errorMessage);
+            throw new Error(errorMessage);
         }
 
         data[collectionName] = [];
-
         await writeDB(data);
 
-        logger.info(`Collection ${collectionName} créée avec succès`);
+        logger.info(`Successfully created collection: ${collectionName}`);
         return data;
     } catch (error) {
-        logger.error(`Erreur lors de la création de la collection ${collectionName}:`, error);
+        logger.error(`Error creating collection ${collectionName}:`, error);
         throw error;
     }
 }
 
+/**
+ * Gets a collection element by its ID
+ * @param {number} id - ID of the element to find
+ * @returns {Promise<Object|null>} The found element or null
+ */
 async function getCollectionById(id) {
     try {
+        logger.debug(`Fetching element with ID: ${id} from caves collection`);
         const data = await readDB();
 
         if (!data.caves) {
-            logger.warn("Collection 'caves' non trouvée dans la base de données");
+            logger.warn("Collection 'caves' not found in database");
             return null;
         }
 
         const cave = data.caves.find(cave => cave.id === id);
 
         if (!cave) {
-            logger.warn(`Cave avec ID ${id} non trouvée`);
+            logger.warn(`Cave with ID ${id} not found`);
             return null;
         }
 
+        logger.info(`Successfully retrieved cave: ${cave.name} (ID: ${id})`);
         return cave;
     } catch (error) {
-        logger.error(`Erreur lors de la récupération de la cave avec ID ${id}:`, error);
+        logger.error(`Error retrieving cave with ID ${id}:`, error);
         throw error;
     }
 }

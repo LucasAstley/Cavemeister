@@ -13,11 +13,13 @@ const db = require('../services/db');
  */
 router.get('/api/caves', async (req, res) => {
     try {
+        logger.debug('Fetching all cellars');
         const caves = await db.getAllElementsFromCollection('caves');
+        logger.info(`Successfully retrieved ${caves.length} cellars`);
         res.json(caves);
     } catch (error) {
-        logger.error('Erreur lors de la récupération des caves:', error);
-        res.status(500).json({ message: 'Erreur lors de la récupération des caves' });
+        logger.error('Error retrieving cellars:', error);
+        res.status(500).json({ message: 'Error retrieving cellars' });
     }
 });
 
@@ -33,14 +35,18 @@ router.get('/api/caves', async (req, res) => {
  */
 router.get('/api/caves/:id', async (req, res) => {
     try {
-        const cave = await db.getElementById('caves', parseInt(req.params.id));
+        const caveId = parseInt(req.params.id);
+        logger.debug(`Fetching cellar with ID: ${caveId}`);
+        const cave = await db.getElementById('caves', caveId);
         if (!cave) {
-            return res.status(404).json({ message: 'Cave non trouvée' });
+            logger.warn(`Cellar not found with ID: ${caveId}`);
+            return res.status(404).json({ message: 'Cellar not found' });
         }
+        logger.info(`Successfully retrieved cellar: ${cave.name}`);
         res.json(cave);
     } catch (error) {
-        logger.error(`Erreur lors de la récupération de la cave ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la récupération de la cave' });
+        logger.error(`Error retrieving cellar ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error retrieving cellar' });
     }
 });
 
@@ -59,11 +65,13 @@ router.get('/api/caves/:id', async (req, res) => {
  */
 router.post('/api/caves', async (req, res) => {
     try {
+        logger.debug('Creating new cellar:', req.body);
         const nouvelleCave = await db.createElement('caves', req.body);
+        logger.info(`Successfully created cellar: ${nouvelleCave.name} (ID: ${nouvelleCave.id})`);
         res.status(201).json(nouvelleCave);
     } catch (error) {
-        logger.error('Erreur lors de la création de la cave:', error);
-        res.status(500).json({ message: 'Erreur lors de la création de la cave' });
+        logger.error('Error creating cellar:', error);
+        res.status(500).json({ message: 'Error creating cellar' });
     }
 });
 
@@ -84,14 +92,18 @@ router.post('/api/caves', async (req, res) => {
  */
 router.put('/api/caves/:id', async (req, res) => {
     try {
-        const caveModifiee = await db.updateElement('caves', parseInt(req.params.id), req.body);
+        const caveId = parseInt(req.params.id);
+        logger.debug(`Updating cellar ID: ${caveId}`, req.body);
+        const caveModifiee = await db.updateElement('caves', caveId, req.body);
         if (!caveModifiee) {
-            return res.status(404).json({ message: 'Cave non trouvée' });
+            logger.warn(`Cellar not found for update with ID: ${caveId}`);
+            return res.status(404).json({ message: 'Cellar not found' });
         }
+        logger.info(`Successfully updated cellar: ${caveModifiee.name} (ID: ${caveId})`);
         res.json(caveModifiee);
     } catch (error) {
-        logger.error(`Erreur lors de la mise à jour de la cave ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la mise à jour de la cave' });
+        logger.error(`Error updating cellar ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error updating cellar' });
     }
 });
 
@@ -107,14 +119,18 @@ router.put('/api/caves/:id', async (req, res) => {
  */
 router.delete('/api/caves/:id', async (req, res) => {
     try {
-        const suppression = await db.removeElement('caves', parseInt(req.params.id));
+        const caveId = parseInt(req.params.id);
+        logger.debug(`Deleting cellar with ID: ${caveId}`);
+        const suppression = await db.removeElement('caves', caveId);
         if (!suppression) {
-            return res.status(404).json({ message: 'Cave non trouvée' });
+            logger.warn(`Cellar not found for deletion with ID: ${caveId}`);
+            return res.status(404).json({ message: 'Cellar not found' });
         }
-        res.json({ message: 'Cave supprimée avec succès' });
+        logger.info(`Successfully deleted cellar with ID: ${caveId}`);
+        res.json({ message: 'Cellar deleted successfully' });
     } catch (error) {
-        logger.error(`Erreur lors de la suppression de la cave ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la suppression de la cave' });
+        logger.error(`Error deleting cellar ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error deleting cellar' });
     }
 });
 
@@ -131,19 +147,20 @@ router.get('/api/bouteilles', async (req, res) => {
     try {
         let bouteilles;
         if (req.query.caveId) {
-            // Utiliser la collection 'bottles' qui est présente dans la base de données
+            const caveId = parseInt(req.query.caveId);
+            logger.debug(`Fetching bottles for cellar ID: ${caveId}`);
             const allBouteilles = await db.getAllElementsFromCollection('bottles');
-            bouteilles = allBouteilles
-                .filter(bouteille =>
-                    bouteille.caveId === parseInt(req.query.caveId)
-                );
+            bouteilles = allBouteilles.filter(bouteille => bouteille.caveId === caveId);
+            logger.info(`Successfully retrieved ${bouteilles.length} bottles for cellar ID: ${caveId}`);
         } else {
+            logger.debug('Fetching all bottles');
             bouteilles = await db.getAllElementsFromCollection('bottles');
+            logger.info(`Successfully retrieved ${bouteilles.length} bottles`);
         }
         res.json(bouteilles);
     } catch (error) {
-        logger.error('Erreur lors de la récupération des bouteilles:', error);
-        res.status(500).json({ message: 'Erreur lors de la récupération des bouteilles' });
+        logger.error('Error retrieving bottles:', error);
+        res.status(500).json({ message: 'Error retrieving bottles' });
     }
 });
 
@@ -159,14 +176,18 @@ router.get('/api/bouteilles', async (req, res) => {
  */
 router.get('/api/bouteilles/:id', async (req, res) => {
     try {
-        const bouteille = await db.getElementById('bottles', parseInt(req.params.id));
+        const bottleId = parseInt(req.params.id);
+        logger.debug(`Fetching bottle with ID: ${bottleId}`);
+        const bouteille = await db.getElementById('bottles', bottleId);
         if (!bouteille) {
-            return res.status(404).json({ message: 'Bouteille non trouvée' });
+            logger.warn(`Bottle not found with ID: ${bottleId}`);
+            return res.status(404).json({ message: 'Bottle not found' });
         }
+        logger.info(`Successfully retrieved bottle: ${bouteille.name}`);
         res.json(bouteille);
     } catch (error) {
-        logger.error(`Erreur lors de la récupération de la bouteille ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la récupération de la bouteille' });
+        logger.error(`Error retrieving bottle ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error retrieving bottle' });
     }
 });
 
@@ -189,11 +210,13 @@ router.get('/api/bouteilles/:id', async (req, res) => {
  */
 router.post('/api/bouteilles', async (req, res) => {
     try {
+        logger.debug('Creating new bottle:', req.body);
         const nouvelleBouteille = await db.createElement('bottles', req.body);
+        logger.info(`Successfully created bottle: ${nouvelleBouteille.name} (ID: ${nouvelleBouteille.id})`);
         res.status(201).json(nouvelleBouteille);
     } catch (error) {
-        logger.error('Erreur lors de la création de la bouteille:', error);
-        res.status(500).json({ message: 'Erreur lors de la création de la bouteille' });
+        logger.error('Error creating bottle:', error);
+        res.status(500).json({ message: 'Error creating bottle' });
     }
 });
 
@@ -218,14 +241,18 @@ router.post('/api/bouteilles', async (req, res) => {
  */
 router.put('/api/bouteilles/:id', async (req, res) => {
     try {
-        const bouteilleModifiee = await db.updateElement('bottles', parseInt(req.params.id), req.body);
+        const bottleId = parseInt(req.params.id);
+        logger.debug(`Updating bottle ID: ${bottleId}`, req.body);
+        const bouteilleModifiee = await db.updateElement('bottles', bottleId, req.body);
         if (!bouteilleModifiee) {
-            return res.status(404).json({ message: 'Bouteille non trouvée' });
+            logger.warn(`Bottle not found for update with ID: ${bottleId}`);
+            return res.status(404).json({ message: 'Bottle not found' });
         }
+        logger.info(`Successfully updated bottle: ${bouteilleModifiee.name} (ID: ${bottleId})`);
         res.json(bouteilleModifiee);
     } catch (error) {
-        logger.error(`Erreur lors de la mise à jour de la bouteille ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la mise à jour de la bouteille' });
+        logger.error(`Error updating bottle ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error updating bottle' });
     }
 });
 
@@ -241,14 +268,18 @@ router.put('/api/bouteilles/:id', async (req, res) => {
  */
 router.delete('/api/bouteilles/:id', async (req, res) => {
     try {
-        const suppression = await db.removeElement('bottles', parseInt(req.params.id));
+        const bottleId = parseInt(req.params.id);
+        logger.debug(`Deleting bottle with ID: ${bottleId}`);
+        const suppression = await db.removeElement('bottles', bottleId);
         if (!suppression) {
-            return res.status(404).json({ message: 'Bouteille non trouvée' });
+            logger.warn(`Bottle not found for deletion with ID: ${bottleId}`);
+            return res.status(404).json({ message: 'Bottle not found' });
         }
-        res.json({ message: 'Bouteille supprimée avec succès' });
+        logger.info(`Successfully deleted bottle with ID: ${bottleId}`);
+        res.json({ message: 'Bottle deleted successfully' });
     } catch (error) {
-        logger.error(`Erreur lors de la suppression de la bouteille ${req.params.id}:`, error);
-        res.status(500).json({ message: 'Erreur lors de la suppression de la bouteille' });
+        logger.error(`Error deleting bottle ${req.params.id}:`, error);
+        res.status(500).json({ message: 'Error deleting bottle' });
     }
 });
 
