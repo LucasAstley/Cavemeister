@@ -99,30 +99,30 @@ function addBottle(bottleData, callback) {
         },
         body: JSON.stringify(bottleData)
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => {
-                throw new Error(data.message || 'Error adding bottle');
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        const newBottle = data;
-        displayNotification(`Bottle "${newBottle.name}" added successfully!`, 'success');
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Error adding bottle');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const newBottle = data;
+            displayNotification(`Bottle "${newBottle.name}" added successfully!`, 'success');
 
-        if (currentCaveId) {
-            fetchBottlesForCave(currentCaveId);
-        }
+            if (currentCaveId) {
+                fetchBottlesForCave(currentCaveId);
+            }
 
-        if (callback) callback();
-        return data;
-    })
-    .catch(error => {
-        console.error("Add error:", error);
-        displayNotification(`Error: ${error.message}`, 'error');
-        throw error;
-    });
+            if (callback) callback();
+            return data;
+        })
+        .catch(error => {
+            console.error('Add error:', error);
+            displayNotification(`Error: ${error.message}`, 'error');
+            throw error;
+        });
 }
 
 let currentCaveId = null;
@@ -476,7 +476,7 @@ function updateBottle(bottleId, bottleData) {
             return data;
         })
         .catch(error => {
-            console.error("Update error:", error);
+            console.error('Update error:', error);
             displayNotification(`Error: ${error.message}`, 'error');
             throw error;
         });
@@ -499,27 +499,27 @@ function deleteBottle(bottleId) {
     return fetch(`/api/bouteilles/${bottleId}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => {
-                throw new Error(data.message || 'Error deleting bottle');
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        displayNotification('Bottle deleted successfully!', 'success');
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Error deleting bottle');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayNotification('Bottle deleted successfully!', 'success');
 
-        if (currentCaveId) {
-            fetchBottlesForCave(currentCaveId);
-        }
-        return data;
-    })
-    .catch(error => {
-        console.error("Delete error:", error);
-        displayNotification(`Error: ${error.message}`, 'error');
-        throw error;
-    });
+            if (currentCaveId) {
+                fetchBottlesForCave(currentCaveId);
+            }
+            return data;
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            displayNotification(`Error: ${error.message}`, 'error');
+            throw error;
+        });
 }
 
 /**

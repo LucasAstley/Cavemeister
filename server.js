@@ -5,7 +5,7 @@ const path = require('path');
 const logger = require('loglevel');
 const routes = require('./src/routes/routes.js');
 
-logger.setLevel(process.env.LOG_LEVEL || "info");
+logger.setLevel(process.env.LOG_LEVEL || 'info');
 
 const PORT = process.env.PORT;
 

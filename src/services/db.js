@@ -195,7 +195,7 @@ async function findElement(collectionName, predicateFunction) {
 async function getCaves() {
     try {
         logger.debug('Retrieving all cellars from database');
-        const data = await readDB()
+        const data = await readDB();
         const caves = data.caves || [];
         logger.info(`Successfully retrieved ${caves.length} cellars`);
         return caves;
@@ -243,7 +243,7 @@ async function getCollectionById(id) {
         const data = await readDB();
 
         if (!data.caves) {
-            logger.warn("Collection 'caves' not found in database");
+            logger.warn('Collection \'caves\' not found in database');
             return null;
         }
 
