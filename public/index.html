@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Cavemeister</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 min-h-screen flex flex-col">
+<header class="bg-amber-800 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Cavemeister</h1>
+        <nav aria-label="Navigation principale">
+            <ul class="flex space-x-4">
+                <li><a href="#caves" class="hover:underline">Caves</a></li>
+                <li><a href="#collection" class="hover:underline">Collection</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto p-4 my-8 flex-grow">
+    <section id="caves" class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-3xl font-bold mb-4 text-amber-800">Mes Caves</h2>
+        <div id="caves-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        </div>
+    </section>
+
+    <section id="collection" class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-3xl font-bold mb-4 text-amber-800">Ma Collection</h2>
+        <div id="bouteilles-container" class="mb-4">
+            <p>Sélectionnez une cave pour voir les bouteilles</p>
+        </div>
+        <button type="button" id="add-bottle-btn" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded">
+            Ajouter une bouteille
+        </button>
+    </section>
+</main>
+
+<!-- Modal pour ajouter une bouteille -->
+<div id="add-bottle-modal" class="modal">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-2xl font-bold text-amber-800">Ajouter une bouteille</h3>
+            <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="add-bottle-form">
+            <div class="mb-4">
+                <label for="cave-select" class="block text-gray-700 font-bold mb-2">Cave</label>
+                <select id="cave-select" name="caveId" class="w-full p-2 border border-gray-300 rounded" required>
+                    <option value="">Sélectionner une cave</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="bottle-name" class="block text-gray-700 font-bold mb-2">Nom</label>
+                    <input type="text" id="bottle-name" name="name" class="w-full p-2 border border-gray-300 rounded" required>
+                </div>
+
+                <div>
+                    <label for="bottle-year" class="block text-gray-700 font-bold mb-2">Année</label>
+                    <input type="number" id="bottle-year" name="year" class="w-full p-2 border border-gray-300 rounded" min="1900" max="2100">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="bottle-category" class="block text-gray-700 font-bold mb-2">Catégorie</label>
+                    <select id="bottle-category" name="category" class="w-full p-2 border border-gray-300 rounded" required>
+                        <option value="">Sélectionner</option>
+                        <option value="wine">Vin</option>
+                        <option value="spirits">Spiritueux</option>
+                        <option value="liqueur">Liqueur</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="bottle-subcategory" class="block text-gray-700 font-bold mb-2">Sous-catégorie</label>
+                    <input type="text" id="bottle-subcategory" name="subcategory" class="w-full p-2 border border-gray-300 rounded" required>
+                    <small class="text-gray-500">Ex: rouge, blanc, whisky, rhum...</small>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="bottle-volume" class="block text-gray-700 font-bold mb-2">Volume (ml)</label>
+                    <input type="number" id="bottle-volume" name="volume" class="w-full p-2 border border-gray-300 rounded" value="750">
+                </div>
+
+                <div>
+                    <label for="bottle-alcohol" class="block text-gray-700 font-bold mb-2">Degré d'alcool (%)</label>
+                    <input type="number" id="bottle-alcohol" name="alcoholContent" class="w-full p-2 border border-gray-300 rounded" step="0.1">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="bottle-origin" class="block text-gray-700 font-bold mb-2">Origine</label>
+                    <input type="text" id="bottle-origin" name="origin" class="w-full p-2 border border-gray-300 rounded">
+                </div>
+
+                <div>
+                    <label for="bottle-temperature" class="block text-gray-700 font-bold mb-2">Température de stockage (°C)</label>
+                    <input type="number" id="bottle-temperature" name="storageTemperature" class="w-full p-2 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="bottle-quantity" class="block text-gray-700 font-bold mb-2">Quantité</label>
+                <input type="number" id="bottle-quantity" name="quantity" class="w-full p-2 border border-gray-300 rounded" value="1" min="1" required>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancel-add-bottle" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Annuler
+                </button>
+                <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-4 rounded">
+                    Ajouter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
